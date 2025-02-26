@@ -429,7 +429,7 @@ mapview(mtq)
 
 :::
 ::: {.column width="50%"}
-::: {.callout-tip title="CRAN Task View: Analysis of Spatial Data"}
+::: {.callout-tip title="[CRAN Task View: Analysis of Spatial Data](https://cran.r-project.org/web/views/Spatial.html)"}
 * Spatial sampling
 * Point pattern analysis
 * Geostatistics
@@ -446,12 +446,12 @@ mapview(mtq)
 ::: columns
 ::: {.column width="50%"}
 **Admin** :  
-`rnaturalearth` pour les pays du monde  
-`giscoR` pour les régions européennes  
+`rnaturalearth` 
+`giscoR`   
 `tigris`, `mapSpain`, `geobr`...  
 
 **Climat** :   
-`geodata` (+ plein d'autres choses)
+`geodata`
 
 **Elevations** :   
 `elevatr` {{< fa solid triangle-exclamation >}}
@@ -462,14 +462,14 @@ mapview(mtq)
 **Eco / Socio / Demo datasets** :  
 `wbstats` (World Bank)  
 `eurostat`  
-`rdhs` (santé)   
+`rdhs` (health)   
 ... 
 
 **Satellite imagery** :   
 `sen2r` (Sentinel-2)  
 `MODIStsp` (MODIS)  
 `rgee` (Google Earth Engine)  
-`nasapower` (météo, climato)  
+`nasapower` (meteo, climato)  
 
 :::
 :::
@@ -477,4 +477,4 @@ mapview(mtq)
 
 
 
-## Bibliographie {.scrollable}
+## Bibliography {.scrollable}

@@ -1,2 +1,2 @@
-# L'écosystème spatiale de R
-Slides : https://rcarto.github.io/RencontresR_2023
+# R Spatial Ecosystem
+rcarto.github.io/R_Spatial_Ecosystem 
