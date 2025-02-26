@@ -1,0 +1,480 @@
+---
+title: "R Spatial Ecosystem"
+author: "Timothée Giraud"
+date: today
+date-format: "MMM D, YYYY"
+bibliography: references.bib
+csl: "universite-de-montreal-apa.csl"
+format: 
+  revealjs:
+    logo: img/logocnrs.svg 
+    auto-stretch: false
+    preview-links: true
+    theme: [custom.scss]
+    fig-align: center
+    smaller: true
+    show-slide-number: all
+    slide-number: true
+    code-line-numbers: true
+    width: 1050
+    height: 700
+knitr:
+  opts_chunk:
+    cache: true
+    echo: true
+    fig.path: "figs/"
+    cache.path: "cache/"
+    fig.align: "center"
+    comment: "" 
+---
+
+#
+
+## A bit of history
+
+- before 2003: `spatial`, `sgeostat`, `splancs`, `akima`, `geoR`, `spatstat`, `spdep`, `maptools`.   
+- 2003: `rgdal` [@R-rgdal], interface between R and GDAL and PROJ4 
+- 2005: `sp` [@R-sf], classes and methods for spatial objects, quickly adopted.
+- 2008: `sp` support in `ggplot2` 
+- 2010: `rgeos` [@R-rgeos], interface between R & GEOS.
+- 2010: `raster` [@R-raster], support for raster data
+- 2016: <u>`sf`</u> [@R-sf], replace `sp`, `rgdal` & `rgeos`
+- 2020: <u>`terra`</u> [@R-terra], replace `raster`
+
+
+
+## Spatial data
+
+::: columns
+::: {.column width="49%"}
+### Raster
+
+An **image located in space**.  
+
+Geographic information is stored in pixels.  
+
+Each pixel, **defined by a resolution**, has value(s) that can be processed and mapped.  
+:::
+
+::: {.column width="51%"}
+![](img/raster.png)
+:::
+:::
+
+
+
+
+## Spatial data
+
+::: columns
+::: {.column width="49%"}
+### Vector
+
+Geometric objects such as **points**, **lines** or **polygons**.
+
+These vector objects do not **pixelate**.
+
+Each object has a **unique identifier**.
+:::
+
+::: {.column width="49%"}
+![](img/vecteur.png)
+:::
+:::
+
+
+
+
+
+
+
+
+## Vector and Raster {.nostretch}
+
+
+![@lambert2016](img/raster_vecteur.png)
+
+
+## Ecosystem foundations 
+::: columns
+
+::: {.column width="25%"}
+
+Widely used geographic libraries: 
+
+* GDAL - Geospatial Data Abstraction Library [@GDAL]
+* PROJ - Coordinate Transformation Software [@PROJ] 
+* GEOS - Geometry Engine - Open Source [@GEOS]
+
+:::
+
+::: {.column width="50%"}
+![@pebesma2023 [chap. 1.7]](img/sf_deps.png)
+:::
+
+::: {.column width="25%"}
+::: {.callout-caution title="These are external dependencies"}
+* Installation
+* Reproducibility
+
+Consider containerization [@nust2021].
+:::
+:::
+:::
+
+
+
+## `sf` package {.nostretch} 
+
+
+::: columns
+
+::: {.column width="20%"}
+
+![](img/logo_sf.gif)
+
+Published in 2016 by Edzer Pebesma. 
+
+:::
+
+::: {.column width="40%"}
+![© Allison Horst, 2018](img/sf_nice.jpg)
+:::
+
+::: {.column width="40%"}
+**Main features**
+
+* import / export
+* display
+* geoprocessing
+* support for unprojected data (on the globe)
+* use of the [*simple feature* standard](https://en.wikipedia.org/wiki/Simple_Features)
+- compatibility with the *pipe* operators (`|>` or `%>%`)  
+- compatibility with `tidyverse` operators. 
+
+
+:::
+:::
+
+
+
+```{r knit_init}
+#| include: false
+#| cache: false
+knitr::knit_hooks$set(nomar = function(before, options, envir){
+  if (before){
+    par(mar=c(0,0,0,0))
+  } 
+})
+```
+
+## Format {.nostretch}
+
+
+![[Simple Features for R Vignette](https://r-spatial.github.io/sf/articles/sf1.html)](img/sf.png){width="75%"}
+
+`sf` objects are `data.frame` in which one of the columns contains geometries.    
+This is a very practical format, data and geometries are intrinsically linked in the same object.
+
+
+
+## Import
+
+```{r sf_import}
+#| eval: true
+#| cache: false
+library(sf)
+mtq <- st_read(dsn = "data/mtq.gpkg", layer = "mtq")
+```
+</br>
+The main spatial file formats are supported.
+
+
+## Display 
+```{r sf_plot_multi}
+#| fig-height: 2
+#| nomar: true
+
+plot(mtq)
+```
+
+```{r sf_plot}
+#| fig-height: 2
+#| nomar: true
+plot(st_geometry(mtq))
+```
+
+
+## Centroids
+
+```{r sf_centro}
+#| warning: false
+#| nomar: true
+mtq_c <- st_centroid(mtq)
+plot(st_geometry(mtq))
+plot(st_geometry(mtq_c), cex = 1.2, 
+     col = "red", pch = 20, 
+     add = TRUE)
+```
+
+## Distance Matrix
+
+```{r sf_matrix}
+mat <- st_distance(x = mtq_c, y = mtq_c)
+mat[1:5, 1:5]
+```
+
+## Union
+
+```{r sf_agg}
+#| nomar: true
+mtq_u <- st_union(mtq)
+plot(st_geometry(mtq), col = "lightblue")
+plot(st_geometry(mtq_u), lwd = 2, border = "red", add = TRUE)
+```
+
+## Buffer
+
+```{r sf_buff}
+#| nomar: true
+mtq_b <- st_buffer(x = mtq_u, dist = 5000)
+plot(st_geometry(mtq_b), col = "grey", lwd = 2, border = "red")
+plot(st_geometry(mtq), col = "lightblue", add = TRUE)
+plot(st_geometry(mtq_u), lwd = 2, add = TRUE)
+```
+
+## Intersection
+::: columns
+::: {.column width="30%"}
+```{r sf_interse}
+#| echo: false
+#| fig-height: 14
+#| nomar: true
+m <- rbind(c(700015,1624212), c(700015,1641586), 
+           c(719127,1641586), c(719127,1624212), 
+           c(700015,1624212))
+p <- st_sf(st_sfc(st_polygon(list(m))), crs = st_crs(mtq))
+plot(st_geometry(mtq))
+plot(p, border="red", lwd=4, add=T)
+text(719127,1641586, "p", pos = 4, cex = 3)
+```
+:::
+
+::: {.column width="60%"}
+```{r sf_intersect2}
+#| warning: false
+#| nomar: true
+#| layout-ncol: 2
+#| fig-height: 10
+mtq_z <- st_intersection(x = mtq, y = p)
+plot(st_geometry(mtq))
+plot(st_geometry(mtq_z), col = "red", 
+     lwd = 2, add = TRUE)
+plot(st_geometry(mtq_z), lwd = 2)
+```
+:::
+:::
+
+
+## Voronoi Polygons
+
+```{r sf_voronoix}
+#| nomar: true
+mtq_c |> 
+  st_union() |> 
+  st_voronoi() |> 
+  st_collection_extract("POLYGON") |> 
+  st_intersection(mtq_u) |> 
+  st_sf() |> 
+  st_join(mtq_c, st_intersects) |>
+  st_cast("MULTIPOLYGON") |>
+  st_geometry() |>
+  plot(col = "ivory4")
+
+```
+
+
+## `terra` package
+
+::: columns
+
+::: {.column width="20%"}
+
+![](img/logo_terra.png)
+
+The `terra` package lets you manage vector data and, above all, **raster**. 
+
+
+:::
+
+::: {.column width="40%"}
+![[rspatial.org](https://rspatial.org/rs/2-exploration.html#single-band-and-composite-maps)](img/terra-multi.png)
+:::
+
+::: {.column width="40%"}
+**Main features**
+
+- Viewing
+- Study area modifications (projection, crop, mask, aggregation, merge, etc.)
+- Spatial algebra (local, focal, global, zonal operations)
+- Transformation and conversion (rasterization, vectorization)
+
+:::
+:::
+
+
+
+
+
+## Thematic Cartography
+
+::: columns
+::: {.column width="33%"}
+![](img/logo_tmap.png){width="240px"}  
+`tmap` [@R-tmap]
+:::
+::: {.column width="33%"} 
+![](img/logo_ggplot2.png){width="240px"}   
+`ggplot2` + `ggspatial` [@R-ggspatial]
+:::
+::: {.column width="33%"}
+![](img/logo_mapsf.png){width="240px"}  
+`mapsf` [@R-mapsf]
+:::
+:::
+
+
+
+## Interactive maps
+
+::: columns
+::: {.column width="33%"}
+![](img/logo_leaflet.png){width="240px"}  
+`leaflet` [@R-leaflet]
+:::
+::: {.column width="33%"} 
+![](img/logo_mapview.gif){width="240px"}   
+`mapview` [@R-mapview]
+:::
+::: {.column width="33%"}
+![](img/mapdeck.gif){width="240px"}  
+`mapdeck` [@R-mapdeck]
+:::
+:::
+
+
+## Interactive Maps
+
+```{r mapview_true}
+#| cache: false
+#| include: false
+library(mapview)
+mtq <- mapsf::mf_get_mtq()
+x <- mapview(mtq)
+dir.create("html", showWarnings = F)
+mapshot(x, url = "html/map.html")
+```
+
+```{r mapview_fake}
+#| cache: true
+#| echo: true
+#| eval: false
+library(mapview)
+mapview(mtq)
+
+```
+<iframe src="html/map.html" width="500px" height="450px"></iframe>
+
+
+
+## Interactive maps with shiny {.nostretch}
+
+![](img/cityguess.png){width="400px"}
+
+[rcarto.shinyapps.io/cityguess](https://rcarto.shinyapps.io/cityguess/)
+
+
+## Color palettes
+
+::: columns
+::: {.column width="50%"}
+**Numerous palettes are available directly in R-base**, and almost 70 (!) packages offer palettes.   
+
+![`hcl.colors()`](img/swatch-plot-1.svg)
+
+:::
+
+::: {.column width="50%"}
+
+
+- `paletteer` [@R-paletteer], 2587 palettes (!!!)
+- `cols4all` [@R-cols4all], shiny app
+
+![`cols4all::c4a_gui()`](img/cols4all.png)
+:::
+
+:::
+
+
+ 
+
+##  Spatial analysis / spatial statistics {.nostretch}
+
+::: columns
+::: {.column width="50%"}
+- `spatstat` : Point pattern analysis
+- `gstat` : Variograms and Krigeage
+- `rgeoda` : Geoda with R
+- `GWmodel`, `spgwr` : Geographically Weighted Models
+
+:::
+::: {.column width="50%"}
+::: {.callout-tip title="CRAN Task View: Analysis of Spatial Data"}
+* Spatial sampling
+* Point pattern analysis
+* Geostatistics
+* Disease mapping and areal data analysis
+* Spatial regression
+* Ecological analysis
+:::
+:::
+:::
+
+
+## Spatial datasets
+
+::: columns
+::: {.column width="50%"}
+**Admin** :  
+`rnaturalearth` pour les pays du monde  
+`giscoR` pour les régions européennes  
+`tigris`, `mapSpain`, `geobr`...  
+
+**Climat** :   
+`geodata` (+ plein d'autres choses)
+
+**Elevations** :   
+`elevatr` {{< fa solid triangle-exclamation >}}
+
+
+::: 
+::: {.column width="50%"}
+**Eco / Socio / Demo datasets** :  
+`wbstats` (World Bank)  
+`eurostat`  
+`rdhs` (santé)   
+... 
+
+**Satellite imagery** :   
+`sen2r` (Sentinel-2)  
+`MODIStsp` (MODIS)  
+`rgee` (Google Earth Engine)  
+`nasapower` (météo, climato)  
+
+:::
+:::
+
+
+
+
+## Bibliographie {.scrollable}
