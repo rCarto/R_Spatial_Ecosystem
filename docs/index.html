@@ -224,7 +224,7 @@ Timothée Giraud
 </div>
 </div>
 
-  <p class="date">Feb 26, 2025</p>
+  <p class="date">Feb 28, 2025</p>
 </section>
 <section>
 <section id="section" class="title-slide slide level1 center">
@@ -344,183 +344,6 @@ Timothée Giraud
 </ul>
 </div></div>
 </section>
-<section id="format" class="slide level2 nostretch">
-<h2>Format</h2>
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="img/sf.png" style="width:75.0%"></p>
-<figcaption><a href="https://r-spatial.github.io/sf/articles/sf1.html">Simple Features for R Vignette</a></figcaption>
-</figure>
-</div>
-<p><code>sf</code> objects are <code>data.frame</code> in which one of the columns contains geometries.<br>
-This is a very practical format, data and geometries are intrinsically linked in the same object.</p>
-</section>
-<section id="import" class="slide level2">
-<h2>Import</h2>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href=""></a><span class="fu">library</span>(sf)</span>
-<span id="cb1-2"><a href=""></a>mtq <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="at">dsn =</span> <span class="st">"data/mtq.gpkg"</span>, <span class="at">layer =</span> <span class="st">"mtq"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Reading layer `mtq' from data source 
-  `/home/tim/Documents/prj/R_Spatial_Ecosystem/data/mtq.gpkg' 
-  using driver `GPKG'
-Simple feature collection with 34 features and 7 fields
-Geometry type: MULTIPOLYGON
-Dimension:     XY
-Bounding box:  xmin: 690574 ymin: 1592536 xmax: 735940.2 ymax: 1645660
-Projected CRS: WGS 84 / UTM zone 20N</code></pre>
-</div>
-</div>
-<p><br> The main spatial file formats are supported.</p>
-</section>
-<section id="display" class="slide level2">
-<h2>Display</h2>
-<div class="cell" data-layout-align="center" data-nomar="true">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href=""></a><span class="fu">plot</span>(mtq)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="figs/sf_plot_multi-1.png" class="quarto-figure quarto-figure-center" width="960"></p>
-</figure>
-</div>
-</div>
-</div>
-<div class="cell" data-layout-align="center" data-nomar="true">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href=""></a><span class="fu">plot</span>(<span class="fu">st_geometry</span>(mtq))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="figs/sf_plot-1.png" class="quarto-figure quarto-figure-center" width="960"></p>
-</figure>
-</div>
-</div>
-</div>
-</section>
-<section id="centroids" class="slide level2">
-<h2>Centroids</h2>
-<div class="cell" data-layout-align="center" data-nomar="true">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href=""></a>mtq_c <span class="ot">&lt;-</span> <span class="fu">st_centroid</span>(mtq)</span>
-<span id="cb5-2"><a href=""></a><span class="fu">plot</span>(<span class="fu">st_geometry</span>(mtq))</span>
-<span id="cb5-3"><a href=""></a><span class="fu">plot</span>(<span class="fu">st_geometry</span>(mtq_c), <span class="at">cex =</span> <span class="fl">1.2</span>, </span>
-<span id="cb5-4"><a href=""></a>     <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">pch =</span> <span class="dv">20</span>, </span>
-<span id="cb5-5"><a href=""></a>     <span class="at">add =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="figs/sf_centro-1.png" class="quarto-figure quarto-figure-center" width="960"></p>
-</figure>
-</div>
-</div>
-</div>
-</section>
-<section id="distance-matrix" class="slide level2">
-<h2>Distance Matrix</h2>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href=""></a>mat <span class="ot">&lt;-</span> <span class="fu">st_distance</span>(<span class="at">x =</span> mtq_c, <span class="at">y =</span> mtq_c)</span>
-<span id="cb6-2"><a href=""></a>mat[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Units: [m]
-          [,1]     [,2]      [,3]      [,4]      [,5]
-[1,]     0.000 35316.29  3019.561 12247.132 17181.321
-[2,] 35316.293     0.00 38303.361 25478.399 18597.357
-[3,]  3019.561 38303.36     0.000 15099.121 20200.611
-[4,] 12247.132 25478.40 15099.121     0.000  7149.189
-[5,] 17181.321 18597.36 20200.611  7149.189     0.000</code></pre>
-</div>
-</div>
-</section>
-<section id="union" class="slide level2">
-<h2>Union</h2>
-<div class="cell" data-layout-align="center" data-nomar="true">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href=""></a>mtq_u <span class="ot">&lt;-</span> <span class="fu">st_union</span>(mtq)</span>
-<span id="cb8-2"><a href=""></a><span class="fu">plot</span>(<span class="fu">st_geometry</span>(mtq), <span class="at">col =</span> <span class="st">"lightblue"</span>)</span>
-<span id="cb8-3"><a href=""></a><span class="fu">plot</span>(<span class="fu">st_geometry</span>(mtq_u), <span class="at">lwd =</span> <span class="dv">2</span>, <span class="at">border =</span> <span class="st">"red"</span>, <span class="at">add =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="figs/sf_agg-1.png" class="quarto-figure quarto-figure-center" width="960"></p>
-</figure>
-</div>
-</div>
-</div>
-</section>
-<section id="buffer" class="slide level2">
-<h2>Buffer</h2>
-<div class="cell" data-layout-align="center" data-nomar="true">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href=""></a>mtq_b <span class="ot">&lt;-</span> <span class="fu">st_buffer</span>(<span class="at">x =</span> mtq_u, <span class="at">dist =</span> <span class="dv">5000</span>)</span>
-<span id="cb9-2"><a href=""></a><span class="fu">plot</span>(<span class="fu">st_geometry</span>(mtq_b), <span class="at">col =</span> <span class="st">"grey"</span>, <span class="at">lwd =</span> <span class="dv">2</span>, <span class="at">border =</span> <span class="st">"red"</span>)</span>
-<span id="cb9-3"><a href=""></a><span class="fu">plot</span>(<span class="fu">st_geometry</span>(mtq), <span class="at">col =</span> <span class="st">"lightblue"</span>, <span class="at">add =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb9-4"><a href=""></a><span class="fu">plot</span>(<span class="fu">st_geometry</span>(mtq_u), <span class="at">lwd =</span> <span class="dv">2</span>, <span class="at">add =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="figs/sf_buff-1.png" class="quarto-figure quarto-figure-center" width="960"></p>
-</figure>
-</div>
-</div>
-</div>
-</section>
-<section id="intersection" class="slide level2">
-<h2>Intersection</h2>
-<div class="columns">
-<div class="column" style="width:30%;">
-<div class="cell" data-layout-align="center" data-nomar="true">
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="figs/sf_interse-1.png" class="quarto-figure quarto-figure-center" width="960"></p>
-</figure>
-</div>
-</div>
-</div>
-</div><div class="column" style="width:60%;">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href=""></a>mtq_z <span class="ot">&lt;-</span> <span class="fu">st_intersection</span>(<span class="at">x =</span> mtq, <span class="at">y =</span> p)</span>
-<span id="cb10-2"><a href=""></a><span class="fu">plot</span>(<span class="fu">st_geometry</span>(mtq))</span>
-<span id="cb10-3"><a href=""></a><span class="fu">plot</span>(<span class="fu">st_geometry</span>(mtq_z), <span class="at">col =</span> <span class="st">"red"</span>, </span>
-<span id="cb10-4"><a href=""></a>     <span class="at">lwd =</span> <span class="dv">2</span>, <span class="at">add =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb10-5"><a href=""></a><span class="fu">plot</span>(<span class="fu">st_geometry</span>(mtq_z), <span class="at">lwd =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell quarto-layout-panel" data-nomar="true" data-layout-ncol="2" data-layout-align="center">
-<div class="quarto-layout-row">
-<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="figs/sf_intersect2-1.png" class="quarto-figure quarto-figure-center" width="960"></p>
-</figure>
-</div>
-</div>
-<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="figs/sf_intersect2-2.png" class="quarto-figure quarto-figure-center" width="960"></p>
-</figure>
-</div>
-</div>
-</div>
-</div>
-</div></div>
-</section>
-<section id="voronoi-polygons" class="slide level2">
-<h2>Voronoi Polygons</h2>
-<div class="cell" data-layout-align="center" data-nomar="true">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href=""></a>mtq_c <span class="sc">|&gt;</span> </span>
-<span id="cb11-2"><a href=""></a>  <span class="fu">st_union</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb11-3"><a href=""></a>  <span class="fu">st_voronoi</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb11-4"><a href=""></a>  <span class="fu">st_collection_extract</span>(<span class="st">"POLYGON"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb11-5"><a href=""></a>  <span class="fu">st_intersection</span>(mtq_u) <span class="sc">|&gt;</span> </span>
-<span id="cb11-6"><a href=""></a>  <span class="fu">st_sf</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb11-7"><a href=""></a>  <span class="fu">st_join</span>(mtq_c, st_intersects) <span class="sc">|&gt;</span></span>
-<span id="cb11-8"><a href=""></a>  <span class="fu">st_cast</span>(<span class="st">"MULTIPOLYGON"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb11-9"><a href=""></a>  <span class="fu">st_geometry</span>() <span class="sc">|&gt;</span></span>
-<span id="cb11-10"><a href=""></a>  <span class="fu">plot</span>(<span class="at">col =</span> <span class="st">"ivory4"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="figs/sf_voronoix-1.png" class="quarto-figure quarto-figure-center" width="960"></p>
-</figure>
-</div>
-</div>
-</div>
-</section>
 <section id="terra-package" class="slide level2">
 <h2><code>terra</code> package</h2>
 <div class="columns">
@@ -573,10 +396,10 @@ Projected CRS: WGS 84 / UTM zone 20N</code></pre>
 </div></div>
 </section>
 <section id="interactive-maps-1" class="slide level2">
-<h2>Interactive Maps</h2>
+<h2>Interactive maps</h2>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href=""></a><span class="fu">library</span>(mapview)</span>
-<span id="cb12-2"><a href=""></a><span class="fu">mapview</span>(mtq)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href=""></a><span class="fu">library</span>(mapview)</span>
+<span id="cb1-2"><a href=""></a><span class="fu">mapview</span>(mtq)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <iframe src="html/map.html" width="500px" height="450px">
 </iframe>

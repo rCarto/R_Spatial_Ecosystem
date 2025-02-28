@@ -168,131 +168,6 @@ knitr::knit_hooks$set(nomar = function(before, options, envir){
 })
 ```
 
-## Format {.nostretch}
-
-
-![[Simple Features for R Vignette](https://r-spatial.github.io/sf/articles/sf1.html)](img/sf.png){width="75%"}
-
-`sf` objects are `data.frame` in which one of the columns contains geometries.    
-This is a very practical format, data and geometries are intrinsically linked in the same object.
-
-
-
-## Import
-
-```{r sf_import}
-#| eval: true
-#| cache: false
-library(sf)
-mtq <- st_read(dsn = "data/mtq.gpkg", layer = "mtq")
-```
-</br>
-The main spatial file formats are supported.
-
-
-## Display 
-```{r sf_plot_multi}
-#| fig-height: 2
-#| nomar: true
-
-plot(mtq)
-```
-
-```{r sf_plot}
-#| fig-height: 2
-#| nomar: true
-plot(st_geometry(mtq))
-```
-
-
-## Centroids
-
-```{r sf_centro}
-#| warning: false
-#| nomar: true
-mtq_c <- st_centroid(mtq)
-plot(st_geometry(mtq))
-plot(st_geometry(mtq_c), cex = 1.2, 
-     col = "red", pch = 20, 
-     add = TRUE)
-```
-
-## Distance Matrix
-
-```{r sf_matrix}
-mat <- st_distance(x = mtq_c, y = mtq_c)
-mat[1:5, 1:5]
-```
-
-## Union
-
-```{r sf_agg}
-#| nomar: true
-mtq_u <- st_union(mtq)
-plot(st_geometry(mtq), col = "lightblue")
-plot(st_geometry(mtq_u), lwd = 2, border = "red", add = TRUE)
-```
-
-## Buffer
-
-```{r sf_buff}
-#| nomar: true
-mtq_b <- st_buffer(x = mtq_u, dist = 5000)
-plot(st_geometry(mtq_b), col = "grey", lwd = 2, border = "red")
-plot(st_geometry(mtq), col = "lightblue", add = TRUE)
-plot(st_geometry(mtq_u), lwd = 2, add = TRUE)
-```
-
-## Intersection
-::: columns
-::: {.column width="30%"}
-```{r sf_interse}
-#| echo: false
-#| fig-height: 14
-#| nomar: true
-m <- rbind(c(700015,1624212), c(700015,1641586), 
-           c(719127,1641586), c(719127,1624212), 
-           c(700015,1624212))
-p <- st_sf(st_sfc(st_polygon(list(m))), crs = st_crs(mtq))
-plot(st_geometry(mtq))
-plot(p, border="red", lwd=4, add=T)
-text(719127,1641586, "p", pos = 4, cex = 3)
-```
-:::
-
-::: {.column width="60%"}
-```{r sf_intersect2}
-#| warning: false
-#| nomar: true
-#| layout-ncol: 2
-#| fig-height: 10
-mtq_z <- st_intersection(x = mtq, y = p)
-plot(st_geometry(mtq))
-plot(st_geometry(mtq_z), col = "red", 
-     lwd = 2, add = TRUE)
-plot(st_geometry(mtq_z), lwd = 2)
-```
-:::
-:::
-
-
-## Voronoi Polygons
-
-```{r sf_voronoix}
-#| nomar: true
-mtq_c |> 
-  st_union() |> 
-  st_voronoi() |> 
-  st_collection_extract("POLYGON") |> 
-  st_intersection(mtq_u) |> 
-  st_sf() |> 
-  st_join(mtq_c, st_intersects) |>
-  st_cast("MULTIPOLYGON") |>
-  st_geometry() |>
-  plot(col = "ivory4")
-
-```
-
 
 ## `terra` package
 
@@ -363,7 +238,7 @@ The `terra` package lets you manage vector data and, above all, **raster**.
 :::
 
 
-## Interactive Maps
+## Interactive maps
 
 ```{r mapview_true}
 #| cache: false
